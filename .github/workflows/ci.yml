@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Analyze & test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: pubspec.yaml
+          channel: stable
+          cache: true
+
+      - run: flutter pub get --enforce-lockfile
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Forbid legacy Material/Cupertino imports
+        run: |
+          if grep -rnE "package:flutter/(material|cupertino)\.dart" lib test; then
+            echo "Use package:material_ui/material_ui.dart (or cupertino_ui) instead."
+            exit 1
+          fi
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Test
+        run: flutter test --coverage --test-randomize-ordering-seed=random
+
+      - name: Coverage report
+        env:
+          # Raise this as tests are added so coverage can only ratchet up.
+          MIN_COVERAGE: 35
+        run: |
+          read -r found hit < <(awk -F: '/^LF:/{f+=$2} /^LH:/{h+=$2} END{print f+0, h+0}' coverage/lcov.info)
+          pct=$(awk -v f="$found" -v h="$hit" 'BEGIN{printf "%.1f", (f ? h*100/f : 0)}')
+          {
+            echo "### Test coverage"
+            echo "**${pct}%** of lines covered (${hit}/${found}). Minimum: ${MIN_COVERAGE}%."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Line coverage: ${pct}% (${hit}/${found})"
+          awk -v p="$pct" -v m="$MIN_COVERAGE" 'BEGIN{exit !(p+0 >= m+0)}' \
+            || { echo "::error::Coverage ${pct}% is below the ${MIN_COVERAGE}% minimum."; exit 1; }
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: coverage
+          path: coverage/lcov.info
+          if-no-files-found: ignore
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/dependency-review-action@v4
