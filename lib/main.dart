@@ -1,5 +1,5 @@
-import 'package:material_ui/material_ui.dart';
 import 'package:groceries_app/screens/groceries_screen.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(const MyApp());
