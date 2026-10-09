@@ -1,0 +1,20 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.rulers": [80],
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.dart-code",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
+  },
+  "dart.previewFlutterUiGuides": true,
+  "dart.previewFlutterUiGuidesCustomTracking": true,
+  "dart.closingLabels": true,
+  "dart.lineLength": 80,
+  "files.exclude": {
+    "**/.dart_tool": true,
+    "**/build": true
+  }
+}
