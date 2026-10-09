@@ -25,9 +25,13 @@ The "Add a new item" screen ([lib/widgets/new_item.dart](lib/widgets/new_item.da
 
 ## Screenshot
 
-<img src="docs/screenshot.png" alt="Your Groceries screen" width="300">
-<img src="docs/screenshot-new-item.png" alt="Add a new item screen with category picker" width="300">
-<img src="docs/screenshot-dismiss.png" alt="Swiping an item to delete it" width="300">
+<table>
+  <tr>
+    <td width="33%"><img src="docs/screenshot.png" alt="Your Groceries screen" width="100%"></td>
+    <td width="33%"><img src="docs/screenshot-new-item.png" alt="Add a new item screen with category picker" width="100%"></td>
+    <td width="33%"><img src="docs/screenshot-dismiss.png" alt="Swiping an item to delete it" width="100%"></td>
+  </tr>
+</table>
 
 ## Getting Started
 
