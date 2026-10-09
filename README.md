@@ -1,7 +1,16 @@
-# groceries_app
-Groceries app repository with CI workflow based on meal-app
+<p align="center">
+  <img src="assets/icon/icon.png" alt="Shopmate icon" width="120">
+</p>
+
+# Shopmate
+Shopmate is a groceries list app (repository: `groceries_app`) with CI workflow based on meal-app.
 
 A new Flutter project.
+
+## Screenshot
+
+<img src="docs/screenshot.png" alt="Your Groceries screen" width="300">
+<img src="docs/screenshot-new-item.png" alt="Add a new item screen with category picker" width="300">
 
 ## Getting Started
 
