@@ -14,6 +14,7 @@ Future<void> addItem(WidgetTester tester, String name) async {
 void main() {
   testWidgets('Grocery list screen renders empty state', (tester) async {
     await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
     expect(find.text('Your Groceries'), findsOneWidget);
     expect(find.text('No items added yet.'), findsOneWidget);
