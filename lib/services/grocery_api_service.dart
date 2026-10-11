@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:groceries_app/services/api_errors.dart';
 import 'package:groceries_app/services/dto/grocery_item_dto.dart';
 
 class GroceryApiException implements Exception {
@@ -23,9 +24,7 @@ class GroceryApiService {
     } on DioException catch (e) {
       final status = e.response?.statusCode;
       throw GroceryApiException(
-        status != null
-            ? 'Request failed ($status).'
-            : (e.message ?? 'Network error.'),
+        status != null ? 'Request failed ($status).' : transportErrorMessage(e),
       );
     }
   }

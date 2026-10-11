@@ -17,8 +17,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String? _error;
 
   Future<void> _signIn() async {
-    if (!_formKey.currentState!.validate()) return;
+    bool areEntriesValid = _formKey.currentState!.validate();
+    if (!areEntriesValid) return;
+
     _formKey.currentState!.save();
+
     setState(() {
       _isSigningIn = true;
       _error = null;

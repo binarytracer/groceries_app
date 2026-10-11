@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:groceries_app/services/api_errors.dart';
 import 'package:groceries_app/services/dto/auth_tokens_dto.dart';
 
 class AuthException implements Exception {
@@ -47,9 +48,7 @@ class AuthApiService {
       final status = e.response?.statusCode;
       if (status == 401) throw AuthException(rejectedMessage, rejected: true);
       throw AuthException(
-        status != null
-            ? 'Sign in failed ($status).'
-            : (e.message ?? 'Network error.'),
+        status != null ? 'Sign in failed ($status).' : transportErrorMessage(e),
       );
     }
   }
