@@ -28,10 +28,10 @@ The "Add a new item" screen ([lib/widgets/new_item.dart](lib/widgets/new_item.da
 
 ## Backend (local API)
 
-The app's backend is the **Groceries API** in [../api](../api), the **first API** built for this app. It is a NestJS service, running locally for now. See its [README](../api/README.md) for setup, and [docs/api-contract.md](docs/api-contract.md) for the contract the app expects (with a Swagger screenshot).
+The app's backend is the **Groceries API** in [binarytracer/groceries-api](https://github.com/binarytracer/groceries-api), the **first API** built for this app. It is a NestJS service, running locally for now. See its [README](https://github.com/binarytracer/groceries-api#readme) for setup, and [docs/api-contract.md](docs/api-contract.md) for the contract the app expects (with a Swagger screenshot).
 
 - **Sign in:** every route except `/health`, `/auth` and `/auth/refresh` needs a JWT. The app signs in with `POST /auth` (a static `admin` / `password123` user for now), keeps the refresh token in secure storage (`flutter_secure_storage`) and the access token in memory. A Dio interceptor adds the token to each request, and on a 401 it refreshes once and retries, signing the user out if the refresh is rejected.
-- **Groceries:** plain REST at the root: `GET /` (list), `POST /` (create), and `GET`/`PUT`/`DELETE /:id`. Items are `{ id, name, quantity, category }`, with UUID ids. Items are kept in memory and start with 5 seed items. `PUT` and `DELETE` are still stubs that don't change the list, so a deleted item returns on the next fetch. Everything resets when the API restarts.
+- **Groceries:** plain REST at the root: `GET /` (list), `POST /` (create), and `GET`/`PUT`/`DELETE /:id`. Items are `{ id, name, quantity, category }`, with UUID ids. Items are kept in memory and start with 5 seed items. `DELETE` removes an item, and `PUT` replaces it or creates it when the id is missing (that is how Undo restores a deleted item, at the end of the list after a refetch). Everything resets when the API restarts.
 - **Base URL:** read from `API_URL` in an env file (`env/dev.json`, kept out of git) and passed to Flutter with `--dart-define-from-file`:
   ```json
   { "API_URL": "http://10.0.2.2:3000" }
@@ -80,7 +80,7 @@ Planned API integrations (names are placeholders until each one is picked):
 
 | API | Purpose | Status |
 |---|---|---|
-| **Grocery** | Shopping list CRUD (the NestJS service in [../api](../api), the first API for this app; to be linked to a serverless API soon) | In progress |
+| **Grocery** | Shopping list CRUD (the NestJS service in [binarytracer/groceries-api](https://github.com/binarytracer/groceries-api), the first API for this app; to be linked to a serverless API soon) | In progress |
 | **Pricing** | Price lookups to enrich list items | Planned |
 | **Auth** | Sign-in and tokens (`/auth` on the same NestJS service, static credentials for now) | In progress |
 
