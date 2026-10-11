@@ -31,6 +31,11 @@ The "Add a new item" screen ([lib/widgets/new_item.dart](lib/widgets/new_item.da
     <td width="33%"><img src="docs/screenshot-new-item.png" alt="Add a new item screen with category picker" width="100%"></td>
     <td width="33%"><img src="docs/screenshot-dismiss.png" alt="Swiping an item to delete it" width="100%"></td>
   </tr>
+  <tr>
+    <td width="33%"><img src="docs/screenshot-splash.png" alt="Splash screen with the app icon" width="100%"></td>
+    <td width="33%"><img src="docs/screenshot-sign-in.png" alt="Sign in screen with username and password fields" width="100%"></td>
+    <td width="33%"></td>
+  </tr>
 </table>
 
 ## Getting Started
