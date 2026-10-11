@@ -1,40 +1,51 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:groceries_app/data/categories.dart';
-import 'package:groceries_app/models/grocery_item.dart';
+import 'package:groceries_app/models/category.dart';
+import 'package:groceries_app/providers/grocery_providers.dart';
 import 'package:material_ui/material_ui.dart';
 
-class NewItem extends StatefulWidget {
+class NewItem extends ConsumerStatefulWidget {
   const NewItem({super.key});
 
   @override
-  State<NewItem> createState() => _NewItemState();
+  ConsumerState<NewItem> createState() => _NewItemState();
 }
 
-class _NewItemState extends State<NewItem> {
+class _NewItemState extends ConsumerState<NewItem> {
   final _formKey = GlobalKey<FormState>();
   var _enteredName = '';
   var _enteredQuantity = 1;
-  var _selectedCategory = categories.entries.first.value.name;
+  Category _selectedCategory = categories.values.first;
+  var _isSaving = false;
 
-  void _saveItem() {
+  Future<void> _saveItem() async {
     final isValid = _formKey.currentState!.validate();
     if (!isValid) {
       return;
     }
 
     _formKey.currentState?.save();
+    setState(() => _isSaving = true);
 
-    // return the new item to the previous screen with data
-    Navigator.of(context).pop(
-      GroceryItem(
-        id: DateTime.now().toIso8601String(),
-        name: _enteredName,
-        quantity: _enteredQuantity,
-        category: categories.entries
-            .firstWhere((entry) => entry.value.name == _selectedCategory)
-            .value,
-      ),
-    );
+    try {
+      final item = await ref
+          .read(groceryListProvider.notifier)
+          .add(
+            name: _enteredName,
+            quantity: _enteredQuantity,
+            category: _selectedCategory,
+          );
+
+      if (!mounted) return;
+      Navigator.of(context).pop(item);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _isSaving = false);
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.toString())));
+    }
   }
 
   @override
@@ -105,13 +116,13 @@ class _NewItemState extends State<NewItem> {
                   SizedBox(width: 12),
                   Expanded(
                     flex: 2,
-                    child: DropdownButtonFormField(
+                    child: DropdownButtonFormField<Category>(
                       decoration: InputDecoration(labelText: 'Category'),
                       initialValue: _selectedCategory,
                       items: [
                         for (final category in sortedCategories)
                           DropdownMenuItem(
-                            value: category.value.name,
+                            value: category.value,
                             child: Row(
                               children: [
                                 Container(
@@ -148,7 +159,7 @@ class _NewItemState extends State<NewItem> {
                   ),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: _saveItem,
+                      onPressed: _isSaving ? null : _saveItem,
                       child: Text('Add Item'),
                     ),
                   ),
