@@ -1,11 +1,18 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:groceries_app/models/category.dart';
 import 'package:groceries_app/models/grocery_item.dart';
+import 'package:groceries_app/providers/auth_providers.dart';
 import 'package:groceries_app/repositories/grocery_repository.dart';
+import 'package:groceries_app/services/api_client.dart';
 import 'package:groceries_app/services/grocery_api_service.dart';
 
+final dioProvider = Provider<Dio>(
+  (ref) => createApiClient(ref.watch(authSessionProvider)),
+);
+
 final groceryApiServiceProvider = Provider<GroceryApiService>(
-  (ref) => GroceryApiService(),
+  (ref) => GroceryApiService(ref.watch(dioProvider)),
 );
 
 final groceryRepositoryProvider = Provider<GroceryRepository>(
@@ -16,8 +23,8 @@ final groceryRepositoryProvider = Provider<GroceryRepository>(
 class GroceryListNotifier extends AsyncNotifier<List<GroceryItem>> {
   @override
   Future<List<GroceryItem>> build() async {
-    // TODO: remove. Temporary delay so the loading spinner is visible.
-    await Future<void>.delayed(const Duration(seconds: 2));
+    // Start over for a different user: refetch after signing in again.
+    ref.watch(authProvider.select((auth) => auth.value ?? false));
     return ref.watch(groceryRepositoryProvider).fetchItems();
   }
 
