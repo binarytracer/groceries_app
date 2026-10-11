@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:groceries_app/screens/groceries_screen.dart';
+import 'package:groceries_app/screens/auth_gate.dart';
 import 'package:material_ui/material_ui.dart';
 
 void main() {
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         ),
         scaffoldBackgroundColor: const Color.fromARGB(255, 50, 58, 60),
       ),
-      home: const GroceryListScreen(),
+      home: const AuthGate(),
     );
   }
 }

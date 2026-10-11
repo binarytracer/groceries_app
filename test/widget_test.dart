@@ -4,15 +4,21 @@ import 'package:groceries_app/data/categories.dart';
 import 'package:groceries_app/main.dart';
 import 'package:groceries_app/models/category.dart';
 import 'package:groceries_app/models/grocery_item.dart';
+import 'package:groceries_app/providers/auth_providers.dart';
 import 'package:groceries_app/providers/grocery_providers.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'support/fake_auth.dart';
 import 'support/fake_grocery_repository.dart';
 
 Future<void> pumpApp(WidgetTester tester, FakeGroceryRepository repo) async {
   await tester.pumpWidget(
     ProviderScope(
-      overrides: [groceryRepositoryProvider.overrideWithValue(repo)],
+      overrides: [
+        tokenStorageProvider.overrideWithValue(FakeTokenStorage('refresh-0')),
+        authApiServiceProvider.overrideWithValue(FakeAuthApiService()),
+        groceryRepositoryProvider.overrideWithValue(repo),
+      ],
       child: const MyApp(),
     ),
   );
@@ -55,7 +61,11 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [groceryRepositoryProvider.overrideWithValue(repo)],
+        overrides: [
+          tokenStorageProvider.overrideWithValue(FakeTokenStorage('refresh-0')),
+          authApiServiceProvider.overrideWithValue(FakeAuthApiService()),
+          groceryRepositoryProvider.overrideWithValue(repo),
+        ],
         child: const MyApp(),
       ),
     );

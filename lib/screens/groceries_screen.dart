@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:groceries_app/models/grocery_item.dart';
+import 'package:groceries_app/providers/auth_providers.dart';
 import 'package:groceries_app/providers/grocery_providers.dart';
 import 'package:groceries_app/widgets/new_item.dart';
 import 'package:material_ui/material_ui.dart';
@@ -115,6 +116,11 @@ class GroceryListScreen extends ConsumerWidget {
             icon: Icon(Icons.refresh),
           ),
           IconButton(onPressed: () => _addItem(context), icon: Icon(Icons.add)),
+          IconButton(
+            tooltip: 'Sign out',
+            onPressed: () => ref.read(authProvider.notifier).logout(),
+            icon: Icon(Icons.logout),
+          ),
         ],
       ),
       body: Column(
